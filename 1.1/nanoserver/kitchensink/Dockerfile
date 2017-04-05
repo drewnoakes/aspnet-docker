@@ -18,9 +18,13 @@ RUN Invoke-WebRequest https://nodejs.org/dist/v${env:NODE_VERSION}/node-v${env:N
 
 RUN setx /M PATH $($Env:PATH + ';' + $Env:ProgramFiles + '/nodejs' + ';' + $Env:ProgramFiles + '/git/cmd')
 
+# Add Docker SDK for when building a solution that has the Docker tools project.
+RUN Invoke-WebRequest https://distaspnet.blob.core.windows.net/sdk/Microsoft.Docker.Sdk.zip -OutFile sdk.zip; `
+    Expand-Archive sdk.zip -DestinationPath \"${Env:ProgramFiles}/dotnet/sdk/${env:DOTNET_SDK_VERSION}/Sdks\"; `
+    Remove-Item -Force sdk.zip
+
 # warmup up NuGet package cache
 COPY packagescache.csproj C:/warmup/packagescache.csproj
-
 RUN dotnet restore C:/warmup/packagescache.csproj `
       --source https://api.nuget.org/v3/index.json; `
     Remove-Item -Recurse -Force C:/warmup

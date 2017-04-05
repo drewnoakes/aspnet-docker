@@ -1,5 +1,9 @@
 FROM microsoft/dotnet:1.1.1-sdk
 
+# set up environment
+ENV ASPNETCORE_URLS http://+:80
+ENV NODE_VERSION 6.10.2
+
 RUN set -ex \
   && for key in \
     9554F04D7259F04124DE6B476D5A82AC7E37093B \
@@ -13,8 +17,6 @@ RUN set -ex \
   ; do \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
   done
-
-ENV NODE_VERSION 6.10.2
 
 # set up node
 RUN buildDeps='xz-utils' \
